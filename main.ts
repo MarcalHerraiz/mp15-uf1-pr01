@@ -6,8 +6,10 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile1`, function (sprite, l
     tiles.setTileAt(location, assets.tile`transparency16`)
     if (level == 1) {
         game.showLongText("Press A to jump. I guess you probably figured that out by now...", DialogLayout.Bottom)
-    } else {
+    } else if (level == 2) {
         game.showLongText("Sticks & stones may break my bones, and spikes will always kill me", DialogLayout.Bottom)
+    } else {
+        game.showLongText("Bouncy blocks give you wings", DialogLayout.Bottom)
     }
 })
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -76,7 +78,11 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile6`, function (sprite, l
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile`, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-    playGame2()
+    if (level == 2) {
+        playGame2()
+    } else {
+        playGame3()
+    }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (playing) {
@@ -89,13 +95,12 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava0, function (sp
     sprites.destroyAllSpritesOfKind(SpriteKind.Player)
     playGame()
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile7`, function (sprite, location) {
+    player2.vy = -300
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile4`, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-    if (level == 1) {
-        Menu()
-    } else {
-        game.gameOver(true)
-    }
+    Menu()
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -219,7 +224,37 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+function playGame3 () {
+    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+    playing = true
+    level = 3
+    scene.setBackgroundColor(9)
+    player2 = sprites.create(img`
+        . . . . f f f f . . . . . 
+        . . f f f f f f f f . . . 
+        . f f f f f f c f f f . . 
+        f f f f f f c c f f f c . 
+        f f f c f f f f f f f c . 
+        c c c f f f e e f f c c . 
+        f f f f f e e f f c c f . 
+        f f f b f e e f b f f f . 
+        . f 4 1 f 4 4 f 1 4 f . . 
+        . f e 4 4 4 4 4 4 e f . . 
+        . f f f e e e e f f f . . 
+        f e f b 7 7 7 7 b f e f . 
+        e 4 f 7 7 7 7 7 7 f 4 e . 
+        e e f 6 6 6 6 6 6 f e e . 
+        . . . f f f f f f . . . . 
+        . . . f f . . f f . . . . 
+        `, SpriteKind.Player)
+    scene.cameraFollowSprite(player2)
+    controller.moveSprite(player2, 100, 0)
+    tiles.setCurrentTilemap(tilemap`level6`)
+    player2.ay = 400
+    tiles.placeOnTile(player2, tiles.getTileLocation(1, 15))
+}
 function playGame () {
+    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
     playing = true
     level = 1
     scene.setBackgroundColor(9)
@@ -245,11 +280,14 @@ function playGame () {
     controller.moveSprite(player2, 100, 0)
     tiles.setCurrentTilemap(tilemap`level4`)
     player2.ay = 400
-    player2.setPosition(8, 100)
+    tiles.placeOnTile(player2, tiles.getTileLocation(1, 8))
 }
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava1, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Player)
     playGame()
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile8`, function (sprite, location) {
+    playGame3()
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -321,25 +359,28 @@ function Menu () {
     playing = false
     tiles.setCurrentTilemap(tilemap`level2`)
     player2 = sprites.create(img`
-        ....ffff.................
-        ..ffffffff...............
-        .ffffffcfff..............
-        ffffffccfffc.............
-        fffcfffffffc.............
-        cccfffeeffcc.............
-        fffffeeffccf.............
-        fffbfeefbfff.............
-        .f41f44f14f..............
-        .fe444444ef..............
-        .fffeeeefff..............
-        fefb7777bfef.............
-        e4f777777f4e.............
-        eef666666fee.............
-        ...ffffff................
-        ...ff..ff................
+        . . . . f f f f . . . . 
+        . . f f f f f f f f . . 
+        . f f f f f f c f f f . 
+        f f f f f f c c f f f c 
+        f f f c f f f f f f f c 
+        c c c f f f e e f f c c 
+        f f f f f e e f f c c f 
+        f f f b f e e f b f f f 
+        . f 4 1 f 4 4 f 1 4 f . 
+        . f e 4 4 4 4 4 4 e f . 
+        . f f f e e e e f f f . 
+        f e f b 7 7 7 7 b f e f 
+        e 4 f 7 7 7 7 7 7 f 4 e 
+        e e f 6 6 6 6 6 6 f e e 
+        . . . f f f f f f . . . 
+        . . . f f . . f f . . . 
         `, SpriteKind.Player)
     scene.cameraFollowSprite(player2)
     controller.moveSprite(player2)
+    if (level == 0) {
+        game.showLongText("Get pass all levels to unlock the final chest!", DialogLayout.Bottom)
+    }
 }
 function playGame2 () {
     playing = true
@@ -367,7 +408,7 @@ function playGame2 () {
     controller.moveSprite(player2, 100, 0)
     tiles.setCurrentTilemap(tilemap`level5`)
     player2.ay = 400
-    player2.setPosition(8, 80)
+    tiles.placeOnTile(player2, tiles.getTileLocation(1, 5))
 }
 let playing = false
 let player2: Sprite = null
