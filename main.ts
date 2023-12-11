@@ -1,3 +1,15 @@
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
+    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+    playGame2()
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile1`, function (sprite, location) {
+    tiles.setTileAt(location, assets.tile`transparency16`)
+    if (level == 1) {
+        game.showLongText("Press A to jump. I guess you probably figured that out by now...", DialogLayout.Bottom)
+    } else {
+        game.showLongText("Sticks & stones may break my bones, and spikes will always kill me", DialogLayout.Bottom)
+    }
+})
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     player2,
@@ -57,6 +69,15 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile6`, function (sprite, location) {
+    if (level == 1) {
+        playGame2()
+    }
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile`, function (sprite, location) {
+    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+    playGame2()
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (playing) {
         if (player2.vy == 0) {
@@ -67,6 +88,14 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava0, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Player)
     playGame()
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile4`, function (sprite, location) {
+    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+    if (level == 1) {
+        Menu()
+    } else {
+        game.gameOver(true)
+    }
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -127,8 +156,9 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
-    playGame()
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, location) {
+    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+    playGame2()
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -191,6 +221,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 function playGame () {
     playing = true
+    level = 1
     scene.setBackgroundColor(9)
     player2 = sprites.create(img`
         . . . . f f f f . . . . . 
@@ -279,6 +310,13 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, location) {
+    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+    playGame2()
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, location) {
+    playGame()
+})
 function Menu () {
     playing = false
     tiles.setCurrentTilemap(tilemap`level2`)
@@ -302,13 +340,39 @@ function Menu () {
         `, SpriteKind.Player)
     scene.cameraFollowSprite(player2)
     controller.moveSprite(player2)
-    console.log(player2.ay)
 }
-scene.onOverlapTile(SpriteKind.Player, sprites.builtin.forestTiles2, function (sprite, location) {
-    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-})
+function playGame2 () {
+    playing = true
+    level = 2
+    scene.setBackgroundColor(9)
+    player2 = sprites.create(img`
+        . . . . f f f f . . . . . 
+        . . f f f f f f f f . . . 
+        . f f f f f f c f f f . . 
+        f f f f f f c c f f f c . 
+        f f f c f f f f f f f c . 
+        c c c f f f e e f f c c . 
+        f f f f f e e f f c c f . 
+        f f f b f e e f b f f f . 
+        . f 4 1 f 4 4 f 1 4 f . . 
+        . f e 4 4 4 4 4 4 e f . . 
+        . f f f e e e e f f f . . 
+        f e f b 7 7 7 7 b f e f . 
+        e 4 f 7 7 7 7 7 7 f 4 e . 
+        e e f 6 6 6 6 6 6 f e e . 
+        . . . f f f f f f . . . . 
+        . . . f f . . f f . . . . 
+        `, SpriteKind.Player)
+    scene.cameraFollowSprite(player2)
+    controller.moveSprite(player2, 100, 0)
+    tiles.setCurrentTilemap(tilemap`level5`)
+    player2.ay = 400
+    player2.setPosition(8, 80)
+}
 let playing = false
 let player2: Sprite = null
+let level = 0
+level = 0
 scene.setBackgroundImage(img`
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
@@ -433,5 +497,5 @@ scene.setBackgroundImage(img`
     `)
 effects.blizzard.startScreenEffect(10000)
 music.play(music.stringPlayable("C D E F G A B C5 ", 120), music.PlaybackMode.UntilDone)
-game.showLongText("Welcome To \"Insert name\"", DialogLayout.Bottom)
+game.showLongText("Welcome To Pixel Rebound", DialogLayout.Bottom)
 Menu()
