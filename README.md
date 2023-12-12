@@ -27,7 +27,6 @@ This image may take a few minutes to refresh.
 
 ![A rendered view of the blocks](https://github.com/marcalherraiz/mp15-uf1-pr01/raw/master/.github/makecode/blocks.png)
 
-#### Metadata (used for search, rendering)
+#### Created by:
 
-* for PXT/arcade
-<script src="https://makecode.com/gh-pages-embed.js"></script><script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>
+* Marçal Herraiz Prat 
