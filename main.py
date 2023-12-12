@@ -1,68 +1,29 @@
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i crida a la funció
+# play_game_2 per iniciar una lògica  del joc addicional.
 def on_overlap_tile(sprite, location):
     info.change_life_by(-1)
     sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    playGame2()
+    play_game_2()
 scene.on_overlap_tile(SpriteKind.player,
     assets.tile("""
         myTile0
     """),
     on_overlap_tile)
 
-def playGame1():
-    global playing, level, player2
-    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    playing = True
-    level = 1
-    player2 = sprites.create(img("""
-            . . . . f f f f . . . . . 
-                    . . f f f f f f f f . . . 
-                    . f f f f f f c f f f . . 
-                    f f f f f f c c f f f c . 
-                    f f f c f f f f f f f c . 
-                    c c c f f f e e f f c c . 
-                    f f f f f e e f f c c f . 
-                    f f f b f e e f b f f f . 
-                    . f 4 1 f 4 4 f 1 4 f . . 
-                    . f e 4 4 4 4 4 4 e f . . 
-                    . f f f e e e e f f f . . 
-                    f e f b 7 7 7 7 b f e f . 
-                    e 4 f 7 7 7 7 7 7 f 4 e . 
-                    e e f 6 6 6 6 6 6 f e e . 
-                    . . . f f f f f f . . . . 
-                    . . . f f . . f f . . . .
-        """),
-        SpriteKind.player)
-    scene.camera_follow_sprite(player2)
-    controller.move_sprite(player2, 100, 0)
-    tiles.set_current_tilemap(tilemap("""
-        level4
-    """))
-    player2.ay = 400
-    tiles.place_on_tile(player2, tiles.get_tile_location(1, 8))
-
-def on_overlap_tile2(sprite2, location2):
-    tiles.set_tile_at(location2, assets.tile("""
-        transparency16
-    """))
-    if level == 1:
-        game.show_long_text("Press A to jump. I guess you probably figured that out by now...",
-            DialogLayout.BOTTOM)
-    elif level == 2:
-        game.show_long_text("Sticks & stones may break my bones, and spikes will always kill me",
-            DialogLayout.BOTTOM)
-    elif level == 3:
-        game.show_long_text("Bouncy blocks give you wings", DialogLayout.BOTTOM)
-    elif level == 4:
-        game.show_long_text("Not all spikes are jerks, but some of them are.",
-            DialogLayout.BOTTOM)
-    else:
-        game.show_long_text("I have taught you everything I know.", DialogLayout.BOTTOM)
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Si ja ha completat el nivell 2 crida a la funció play_game_3 per iniciar una lògica  del joc addicional.
+def on_overlap_tile2(sprite11, location11):
+    if level == 2:
+        play_game_3()
 scene.on_overlap_tile(SpriteKind.player,
     assets.tile("""
-        myTile1
+        myTile8
     """),
     on_overlap_tile2)
 
+# Funció que s'executa quan es prem el botó per anar cap amunt.
+# Crea una animació repetint en bucle 3 imatges.
 def on_up_pressed():
     animation.run_image_animation(player2,
         [img("""
@@ -123,34 +84,82 @@ def on_up_pressed():
         True)
 controller.up.on_event(ControllerButtonEvent.PRESSED, on_up_pressed)
 
-def on_overlap_tile3(sprite3, location3):
-    if level == 1:
-        playGame2()
-scene.on_overlap_tile(SpriteKind.player,
-    assets.tile("""
-        myTile6
-    """),
-    on_overlap_tile3)
+# Definició de la funció "menu".
+# Declara les variables globals playing i player2.
+# Crea un sprite del tipus SpriteKind.player, configura la càmera per a seguir al sprite player2.
+# Permet el moviment del sprite player2 per mitjà del controlador.
+# Mostra un missatge llarg en la pantalla si el nivell és igual a 0.
+def menu():
+    global playing, player2
+    playing = False
+    tiles.set_current_tilemap(tilemap("""
+        level2
+    """))
+    player2 = sprites.create(img("""
+            . . . . f f f f . . . . 
+                    . . f f f f f f f f . . 
+                    . f f f f f f c f f f . 
+                    f f f f f f c c f f f c 
+                    f f f c f f f f f f f c 
+                    c c c f f f e e f f c c 
+                    f f f f f e e f f c c f 
+                    f f f b f e e f b f f f 
+                    . f 4 1 f 4 4 f 1 4 f . 
+                    . f e 4 4 4 4 4 4 e f . 
+                    . f f f e e e e f f f . 
+                    f e f b 7 7 7 7 b f e f 
+                    e 4 f 7 7 7 7 7 7 f 4 e 
+                    e e f 6 6 6 6 6 6 f e e 
+                    . . . f f f f f f . . . 
+                    . . . f f . . f f . . .
+        """),
+        SpriteKind.player)
+    scene.camera_follow_sprite(player2)
+    controller.move_sprite(player2)
+    if level == 0:
+        game.show_long_text("Get pass all levels to win!", DialogLayout.BOTTOM)
 
-def on_overlap_tile4(sprite4, location4):
-    info.change_life_by(-1)
+# Funció que inicia la lògica del joc per al nivell 3.
+# Destrueix tots els sprites del tipus SpriteKind.player en el joc.
+# Estableix playing en True per a indicar que el joc està en progrés.
+# Estableix el nivell en 3.
+# Configura l'acceleració vertical del sprite player2.
+# Col·loca el sprite player2 en una ubicació específica del mosaic.
+def play_game_3():
+    global playing, level, player2
     sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    if level == 1:
-        playGame1()
-    elif level == 2:
-        playGame2()
-    elif level == 3:
-        playGame3()
-    elif level == 4:
-        playGame4()
-    else:
-        finalGame()
-scene.on_overlap_tile(SpriteKind.player,
-    assets.tile("""
-        myTile
-    """),
-    on_overlap_tile4)
+    playing = True
+    level = 3
+    player2 = sprites.create(img("""
+            . . . . f f f f . . . . . 
+                    . . f f f f f f f f . . . 
+                    . f f f f f f c f f f . . 
+                    f f f f f f c c f f f c . 
+                    f f f c f f f f f f f c . 
+                    c c c f f f e e f f c c . 
+                    f f f f f e e f f c c f . 
+                    f f f b f e e f b f f f . 
+                    . f 4 1 f 4 4 f 1 4 f . . 
+                    . f e 4 4 4 4 4 4 e f . . 
+                    . f f f e e e e f f f . . 
+                    f e f b 7 7 7 7 b f e f . 
+                    e 4 f 7 7 7 7 7 7 f 4 e . 
+                    e e f 6 6 6 6 6 6 f e e . 
+                    . . . f f f f f f . . . . 
+                    . . . f f . . f f . . . .
+        """),
+        SpriteKind.player)
+    scene.camera_follow_sprite(player2)
+    controller.move_sprite(player2, 100, 0)
+    tiles.set_current_tilemap(tilemap("""
+        level7
+    """))
+    player2.ay = 400
+    tiles.place_on_tile(player2, tiles.get_tile_location(1, 15))
 
+# Funció que s'executa quan es pressiona el botó A del controlador.
+# Verifica si el joc està en curs i si el jugador està tocant el terra.
+# Si el jugador està en el terra, estableix la velocitat vertical a -200 per a simular un salt.
 def on_a_pressed():
     global jump
     if playing:
@@ -159,40 +168,20 @@ def on_a_pressed():
             jump = True
 controller.A.on_event(ControllerButtonEvent.PRESSED, on_a_pressed)
 
-def on_overlap_tile5(sprite5, location5):
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i crida a la funció play_game_2.
+def on_overlap_tile3(sprite12, location12):
     info.change_life_by(-1)
     sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    if level == 4:
-        playGame4()
-    else:
-        finalGame()
-scene.on_overlap_tile(SpriteKind.player,
-    sprites.dungeon.hazard_lava0,
-    on_overlap_tile5)
-
-def on_overlap_tile6(sprite6, location6):
-    player2.vy = -300
+    play_game_2()
 scene.on_overlap_tile(SpriteKind.player,
     assets.tile("""
-        myTile7
+        myTile2
     """),
-    on_overlap_tile6)
+    on_overlap_tile3)
 
-def on_overlap_tile7(sprite7, location7):
-    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    if level == 4:
-        game.show_long_text("Final Level", DialogLayout.BOTTOM)
-        finalGame()
-    elif level == 5:
-        game.game_over(True)
-    else:
-        Menu()
-scene.on_overlap_tile(SpriteKind.player,
-    assets.tile("""
-        myTile4
-    """),
-    on_overlap_tile7)
-
+# Funció que s'executa quan es prem el botó per anar cap a l'esquerra.
+# Crea una animació repetint en bucle 3 imatges.
 def on_left_pressed():
     animation.run_image_animation(player2,
         [img("""
@@ -253,26 +242,39 @@ def on_left_pressed():
         True)
 controller.left.on_event(ControllerButtonEvent.PRESSED, on_left_pressed)
 
-def on_overlap_tile8(sprite8, location8):
-    if level == 3:
-        playGame4()
-scene.on_overlap_tile(SpriteKind.player,
-    assets.tile("""
-        myTile9
-    """),
-    on_overlap_tile8)
-
-def on_overlap_tile9(sprite9, location9):
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i crida a la funció play_game_2.
+def on_overlap_tile4(sprite9, location9):
     info.change_life_by(-1)
     sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    playGame2()
+    play_game_2()
 scene.on_overlap_tile(SpriteKind.player,
     assets.tile("""
         myTile3
     """),
-    on_overlap_tile9)
+    on_overlap_tile4)
 
-def finalGame():
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i 
+# si level es 4 crida a la funció play_game_4 sino final_game.
+def on_overlap_tile5(sprite10, location10):
+    info.change_life_by(-1)
+    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
+    if level == 4:
+        play_game_4()
+    else:
+        final_game()
+scene.on_overlap_tile(SpriteKind.player,
+    sprites.dungeon.hazard_lava1,
+    on_overlap_tile5)
+
+# Funció que inicia la lògica del joc per al nivell final.
+# Destrueix tots els sprites del tipus SpriteKind.player en el joc.
+# Estableix playing en True per a indicar que el joc està en progrés.
+# Estableix el nivell en 5.
+# Configura l'acceleració vertical del sprite player2.
+# Col·loca el sprite player2 en una ubicació específica del mosaic.
+def final_game():
     global playing, level, player2
     sprites.destroy_all_sprites_of_kind(SpriteKind.player)
     scene.set_background_image(img("""
@@ -426,6 +428,95 @@ def finalGame():
     player2.ay = 400
     tiles.place_on_tile(player2, tiles.get_tile_location(1, 15))
 
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Si ja ha completat el nivell 3 crida a la funció play_game_4 per iniciar una lògica  del joc addicional.
+def on_overlap_tile6(sprite8, location8):
+    if level == 3:
+        play_game_4()
+scene.on_overlap_tile(SpriteKind.player,
+    assets.tile("""
+        myTile9
+    """),
+    on_overlap_tile6)
+
+# Funció que inicia la lògica del joc per al nivell 2.
+# Destrueix tots els sprites del tipus SpriteKind.player en el joc.
+# Estableix playing en True per a indicar que el joc està en progrés.
+# Estableix el nivell en 2.
+# Configura l'acceleració vertical del sprite player2.
+# Col·loca el sprite player2 en una ubicació específica del mosaic.
+def play_game_2():
+    global playing, level, player2
+    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
+    playing = True
+    level = 2
+    player2 = sprites.create(img("""
+            . . . . f f f f . . . . . 
+                    . . f f f f f f f f . . . 
+                    . f f f f f f c f f f . . 
+                    f f f f f f c c f f f c . 
+                    f f f c f f f f f f f c . 
+                    c c c f f f e e f f c c . 
+                    f f f f f e e f f c c f . 
+                    f f f b f e e f b f f f . 
+                    . f 4 1 f 4 4 f 1 4 f . . 
+                    . f e 4 4 4 4 4 4 e f . . 
+                    . f f f e e e e f f f . . 
+                    f e f b 7 7 7 7 b f e f . 
+                    e 4 f 7 7 7 7 7 7 f 4 e . 
+                    e e f 6 6 6 6 6 6 f e e . 
+                    . . . f f f f f f . . . . 
+                    . . . f f . . f f . . . .
+        """),
+        SpriteKind.player)
+    scene.camera_follow_sprite(player2)
+    controller.move_sprite(player2, 100, 0)
+    tiles.set_current_tilemap(tilemap("""
+        level5
+    """))
+    player2.ay = 400
+    tiles.place_on_tile(player2, tiles.get_tile_location(1, 5))
+
+# Funció que inicia la lògica del joc per al nivell 1.
+# Destrueix tots els sprites del tipus SpriteKind.player en el joc.
+# Estableix playing en True per a indicar que el joc està en progrés.
+# Estableix el nivell en 1.
+# Configura l'acceleració vertical del sprite player2.
+# Col·loca el sprite player2 en una ubicació específica del mosaic.
+def play_game_1():
+    global playing, level, player2
+    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
+    playing = True
+    level = 1
+    player2 = sprites.create(img("""
+            . . . . f f f f . . . . . 
+                    . . f f f f f f f f . . . 
+                    . f f f f f f c f f f . . 
+                    f f f f f f c c f f f c . 
+                    f f f c f f f f f f f c . 
+                    c c c f f f e e f f c c . 
+                    f f f f f e e f f c c f . 
+                    f f f b f e e f b f f f . 
+                    . f 4 1 f 4 4 f 1 4 f . . 
+                    . f e 4 4 4 4 4 4 e f . . 
+                    . f f f e e e e f f f . . 
+                    f e f b 7 7 7 7 b f e f . 
+                    e 4 f 7 7 7 7 7 7 f 4 e . 
+                    e e f 6 6 6 6 6 6 f e e . 
+                    . . . f f f f f f . . . . 
+                    . . . f f . . f f . . . .
+        """),
+        SpriteKind.player)
+    scene.camera_follow_sprite(player2)
+    controller.move_sprite(player2, 100, 0)
+    tiles.set_current_tilemap(tilemap("""
+        level4
+    """))
+    player2.ay = 400
+    tiles.place_on_tile(player2, tiles.get_tile_location(1, 8))
+
+# Funció que s'executa quan es prem el botó per anar a la dreta.
+# Crea una animació repetint en bucle 3 imatges.
 def on_right_pressed():
     animation.run_image_animation(player2,
         [img("""
@@ -486,58 +577,51 @@ def on_right_pressed():
         True)
 controller.right.on_event(ControllerButtonEvent.PRESSED, on_right_pressed)
 
-def playGame3():
-    global playing, level, player2
-    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    playing = True
-    level = 3
-    player2 = sprites.create(img("""
-            . . . . f f f f . . . . . 
-                    . . f f f f f f f f . . . 
-                    . f f f f f f c f f f . . 
-                    f f f f f f c c f f f c . 
-                    f f f c f f f f f f f c . 
-                    c c c f f f e e f f c c . 
-                    f f f f f e e f f c c f . 
-                    f f f b f e e f b f f f . 
-                    . f 4 1 f 4 4 f 1 4 f . . 
-                    . f e 4 4 4 4 4 4 e f . . 
-                    . f f f e e e e f f f . . 
-                    f e f b 7 7 7 7 b f e f . 
-                    e 4 f 7 7 7 7 7 7 f 4 e . 
-                    e e f 6 6 6 6 6 6 f e e . 
-                    . . . f f f f f f . . . . 
-                    . . . f f . . f f . . . .
-        """),
-        SpriteKind.player)
-    scene.camera_follow_sprite(player2)
-    controller.move_sprite(player2, 100, 0)
-    tiles.set_current_tilemap(tilemap("""
-        level7
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# És transparenta el mosaic i segons el level es mostra un text diferent.
+def on_overlap_tile7(sprite2, location2):
+    tiles.set_tile_at(location2, assets.tile("""
+        transparency16
     """))
-    player2.ay = 400
-    tiles.place_on_tile(player2, tiles.get_tile_location(1, 15))
-
-def on_overlap_tile10(sprite10, location10):
-    info.change_life_by(-1)
-    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    if level == 4:
-        playGame4()
+    if level == 1:
+        game.show_long_text("Press A to jump. I guess you probably figured that out by now...",
+            DialogLayout.BOTTOM)
+    elif level == 2:
+        game.show_long_text("Sticks & stones may break my bones, and spikes will always kill me",
+            DialogLayout.BOTTOM)
+    elif level == 3:
+        game.show_long_text("Bouncy blocks give you wings", DialogLayout.BOTTOM)
+    elif level == 4:
+        game.show_long_text("Not all spikes are jerks, but some of them are.",
+            DialogLayout.BOTTOM)
     else:
-        finalGame()
-scene.on_overlap_tile(SpriteKind.player,
-    sprites.dungeon.hazard_lava1,
-    on_overlap_tile10)
-
-def on_overlap_tile11(sprite11, location11):
-    if level == 2:
-        playGame3()
+        game.show_long_text("I have taught you everything I know.", DialogLayout.BOTTOM)
 scene.on_overlap_tile(SpriteKind.player,
     assets.tile("""
-        myTile8
+        myTile1
     """),
-    on_overlap_tile11)
+    on_overlap_tile7)
 
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Si ja ha completat el nivell 4 crida a la funció final_game per iniciar una lògica  del joc addicional,
+# si ja ha completat el nivell 5 ha guanyat o es crida a la funció menu.
+def on_overlap_tile8(sprite7, location7):
+    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
+    if level == 4:
+        game.show_long_text("Final Level", DialogLayout.BOTTOM)
+        final_game()
+    elif level == 5:
+        game.game_over(True)
+    else:
+        menu()
+scene.on_overlap_tile(SpriteKind.player,
+    assets.tile("""
+        myTile4
+    """),
+    on_overlap_tile8)
+
+# Funció que s'executa quan es prem el botó per anar cap a baix.
+# Crea una animació repetint en bucle 3 imatges.
 def on_down_pressed():
     animation.run_image_animation(player2,
         [img("""
@@ -598,56 +682,67 @@ def on_down_pressed():
         True)
 controller.down.on_event(ControllerButtonEvent.PRESSED, on_down_pressed)
 
-def on_overlap_tile12(sprite12, location12):
-    info.change_life_by(-1)
-    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    playGame2()
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Si ja ha completat el nivell 1 crida a la funció play_game_2 per iniciar una lògica  del joc addicional.
+def on_overlap_tile9(sprite3, location3):
+    if level == 1:
+        play_game_2()
 scene.on_overlap_tile(SpriteKind.player,
     assets.tile("""
-        myTile2
+        myTile6
     """),
-    on_overlap_tile12)
+    on_overlap_tile9)
 
-def on_overlap_tile13(sprite13, location13):
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Canvia la velocitat vertical del jugador per a fer-lo saltar cap amunt.
+def on_overlap_tile10(sprite6, location6):
+    player2.vy = -300
+scene.on_overlap_tile(SpriteKind.player,
+    assets.tile("""
+        myTile7
+    """),
+    on_overlap_tile10)
+
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Si no ha completat cap nivell crida a la funció play_game_1 per iniciar una lògica  del joc addicional.
+def on_overlap_tile11(sprite13, location13):
     if level == 0:
-        playGame1()
+        play_game_1()
 scene.on_overlap_tile(SpriteKind.player,
     assets.tile("""
         myTile5
     """),
-    on_overlap_tile13)
+    on_overlap_tile11)
 
-def Menu():
-    global playing, player2
-    playing = False
-    tiles.set_current_tilemap(tilemap("""
-        level2
-    """))
-    player2 = sprites.create(img("""
-            . . . . f f f f . . . . 
-                    . . f f f f f f f f . . 
-                    . f f f f f f c f f f . 
-                    f f f f f f c c f f f c 
-                    f f f c f f f f f f f c 
-                    c c c f f f e e f f c c 
-                    f f f f f e e f f c c f 
-                    f f f b f e e f b f f f 
-                    . f 4 1 f 4 4 f 1 4 f . 
-                    . f e 4 4 4 4 4 4 e f . 
-                    . f f f e e e e f f f . 
-                    f e f b 7 7 7 7 b f e f 
-                    e 4 f 7 7 7 7 7 7 f 4 e 
-                    e e f 6 6 6 6 6 6 f e e 
-                    . . . f f f f f f . . . 
-                    . . . f f . . f f . . .
-        """),
-        SpriteKind.player)
-    scene.camera_follow_sprite(player2)
-    controller.move_sprite(player2)
-    if level == 0:
-        game.show_long_text("Get pass all levels to unlock the final chest!",
-            DialogLayout.BOTTOM)
-def playGame4():
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i
+# si segons el level es crida a una funció concreta.
+def on_overlap_tile12(sprite4, location4):
+    info.change_life_by(-1)
+    sprites.destroy_all_sprites_of_kind(SpriteKind.player)
+    if level == 1:
+        play_game_1()
+    elif level == 2:
+        play_game_2()
+    elif level == 3:
+        play_game_3()
+    elif level == 4:
+        play_game_4()
+    else:
+        final_game()
+scene.on_overlap_tile(SpriteKind.player,
+    assets.tile("""
+        myTile
+    """),
+    on_overlap_tile12)
+
+# Funció que inicia la lògica del joc per al nivell 4.
+# Destrueix tots els sprites del tipus SpriteKind.player en el joc.
+# Estableix playing en True per a indicar que el joc està en progrés.
+# Estableix el nivell en 4.
+# Configura l'acceleració vertical del sprite player2.
+# Col·loca el sprite player2 en una ubicació específica del mosaic.
+def play_game_4():
     global playing, level, player2
     sprites.destroy_all_sprites_of_kind(SpriteKind.player)
     playing = True
@@ -678,40 +773,24 @@ def playGame4():
     """))
     player2.ay = 400
     tiles.place_on_tile(player2, tiles.get_tile_location(1, 15))
-def playGame2():
-    global playing, level, player2
+
+# Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
+# Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i
+# si level es 4 crida a la funció play_game_4 sino final_game.
+def on_overlap_tile13(sprite5, location5):
+    info.change_life_by(-1)
     sprites.destroy_all_sprites_of_kind(SpriteKind.player)
-    playing = True
-    level = 2
-    player2 = sprites.create(img("""
-            . . . . f f f f . . . . . 
-                    . . f f f f f f f f . . . 
-                    . f f f f f f c f f f . . 
-                    f f f f f f c c f f f c . 
-                    f f f c f f f f f f f c . 
-                    c c c f f f e e f f c c . 
-                    f f f f f e e f f c c f . 
-                    f f f b f e e f b f f f . 
-                    . f 4 1 f 4 4 f 1 4 f . . 
-                    . f e 4 4 4 4 4 4 e f . . 
-                    . f f f e e e e f f f . . 
-                    f e f b 7 7 7 7 b f e f . 
-                    e 4 f 7 7 7 7 7 7 f 4 e . 
-                    e e f 6 6 6 6 6 6 f e e . 
-                    . . . f f f f f f . . . . 
-                    . . . f f . . f f . . . .
-        """),
-        SpriteKind.player)
-    scene.camera_follow_sprite(player2)
-    controller.move_sprite(player2, 100, 0)
-    tiles.set_current_tilemap(tilemap("""
-        level5
-    """))
-    player2.ay = 400
-    tiles.place_on_tile(player2, tiles.get_tile_location(1, 5))
+    if level == 4:
+        play_game_4()
+    else:
+        final_game()
+scene.on_overlap_tile(SpriteKind.player,
+    sprites.dungeon.hazard_lava0,
+    on_overlap_tile13)
+
 jump = False
-player2: Sprite = None
 playing = False
+player2: Sprite = None
 level = 0
 level = 0
 scene.set_background_image(img("""
@@ -841,4 +920,4 @@ music.play(music.string_playable("C D E F C E G D ", 120),
     music.PlaybackMode.UNTIL_DONE)
 game.show_long_text("Welcome To Pixel Rebound", DialogLayout.BOTTOM)
 info.set_life(5)
-Menu()
+menu()
