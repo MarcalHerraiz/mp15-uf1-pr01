@@ -146,7 +146,7 @@ function play_game_3() {
         level7
     `)
     player2.ay = 400
-    tiles.placeOnTile(player2, tiles.getTileLocation(1, 15))
+    tiles.placeOnTile(player2, tiles.getTileLocation(1, 26))
 }
 
 //  Funció que s'executa quan es pressiona el botó A del controlador.
@@ -238,7 +238,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`
     play_game_2()
 })
 //  Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
-//  Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i 
+//  Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i
 //  si level es 4 crida a la funció play_game_4 sino final_game.
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava1, function on_overlap_tile5(sprite10: Sprite, location10: tiles.Location) {
     info.changeLifeBy(-1)
@@ -729,7 +729,7 @@ function play_game_4() {
         level6
     `)
     player2.ay = 400
-    tiles.placeOnTile(player2, tiles.getTileLocation(1, 15))
+    tiles.placeOnTile(player2, tiles.getTileLocation(1, 20))
 }
 
 //  Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.

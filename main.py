@@ -155,7 +155,7 @@ def play_game_3():
         level7
     """))
     player2.ay = 400
-    tiles.place_on_tile(player2, tiles.get_tile_location(1, 15))
+    tiles.place_on_tile(player2, tiles.get_tile_location(1, 26))
 
 # Funció que s'executa quan es pressiona el botó A del controlador.
 # Verifica si el joc està en curs i si el jugador està tocant el terra.
@@ -255,7 +255,7 @@ scene.on_overlap_tile(SpriteKind.player,
     on_overlap_tile4)
 
 # Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
-# Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i 
+# Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i
 # si level es 4 crida a la funció play_game_4 sino final_game.
 def on_overlap_tile5(sprite10, location10):
     info.change_life_by(-1)
@@ -772,7 +772,7 @@ def play_game_4():
         level6
     """))
     player2.ay = 400
-    tiles.place_on_tile(player2, tiles.get_tile_location(1, 15))
+    tiles.place_on_tile(player2, tiles.get_tile_location(1, 20))
 
 # Funció que s'executa quan un sprite de tipus SpriteKind.player es superposa a un mosaic específic.
 # Redueix les vides en 1, elimina tots els sprites del tipus SpriteKind.player i
